@@ -17,36 +17,51 @@ titanic['Embarked'] = titanic['Embarked'].map({'S': 'Southampton', 'C': 'Cherbou
 
 titanic['Pclass'] = titanic['Pclass'].map({1: 'Primeira Classe', 2: 'Segunda Classe', 3: 'Terceira Classe'})
 
+# Renomeando colunas para português
+titanic.rename(columns={
+    'Survived': 'Sobreviveu',
+    'Pclass': 'Classe',
+    'Sex': 'Sexo',
+    'Age': 'Idade',
+    'SibSp': 'Irmãos/Cônjuges a Bordo',
+    'Parch': 'Pais/Filhos a Bordo',
+    'Fare': 'Tarifa',
+    'Embarked': 'Embarque',
+    'PassengerId': 'ID Passageiro',
+    'Name': 'Nome',
+    'Ticket': 'Bilhete'
+}, inplace=True)
+
 
 def gerar_grafico(tipo_grafico):
     if tipo_grafico == 'barras':
-        taxa_sobrevivencia = titanic.groupby('Sex')['Survived'].mean().reset_index()
-        taxa_sobrevivencia['Survived'] *= 100
+        taxa_sobrevivencia = titanic.groupby('Sexo')['Sobreviveu'].mean().reset_index()
+        taxa_sobrevivencia['Sobreviveu'] *= 100
 
-        fig = px.bar(taxa_sobrevivencia, x='Sex', y='Survived', color='Sex',
-                     labels={'Sex': 'Gênero', 'Survived': 'Taxa de Sobrevivência (%)'},
+        fig = px.bar(taxa_sobrevivencia, x='Sexo', y='Sobreviveu', color='Sexo',
+                     labels={'Sexo': 'Gênero', 'Sobreviveu': 'Taxa de Sobrevivência (%)'},
                      title='Taxa de Sobrevivência por Gênero')
 
     elif tipo_grafico == 'tarifa_classe':
-        fig = px.box(titanic, x='Pclass', y='Fare', color='Pclass',
-                     labels={'Pclass': 'Classe', 'Fare': 'Tarifa'},
+        fig = px.box(titanic, x='Classe', y='Tarifa', color='Classe',
+                     labels={'Classe': 'Classe', 'Tarifa': 'Tarifa'},
                      title='Distribuição de Tarifas por Classe')
 
     elif tipo_grafico == 'distribuicao_idade':
-        fig = px.histogram(titanic, x='Age', nbins=20,
-                           labels={'Age': 'Idade', 'count': 'Número de Passageiros'},
+        fig = px.histogram(titanic, x='Idade', nbins=20,
+                           labels={'Idade': 'Idade', 'count': 'Número de Passageiros'},
                            title='Distribuição da Idade dos Passageiros')
 
     elif tipo_grafico == 'sobrevivencia_classe':
-        taxa_sobrevivencia_classe = titanic.groupby('Pclass')['Survived'].mean().reset_index()
-        taxa_sobrevivencia_classe['Survived'] *= 100
+        taxa_sobrevivencia_classe = titanic.groupby('Classe')['Sobreviveu'].mean().reset_index()
+        taxa_sobrevivencia_classe['Sobreviveu'] *= 100
 
-        fig = px.bar(taxa_sobrevivencia_classe, x='Pclass', y='Survived',
-                     labels={'Pclass': 'Classe', 'Survived': 'Taxa de Sobrevivência (%)'},
+        fig = px.bar(taxa_sobrevivencia_classe, x='Classe', y='Sobreviveu',
+                     labels={'Classe': 'Classe', 'Sobreviveu': 'Taxa de Sobrevivência (%)'},
                      title='Taxa de Sobrevivência por Classe')
 
     elif tipo_grafico == 'proporcao_sobreviventes':
-        prop_sobreviventes = titanic['Survived'].value_counts().reset_index()
+        prop_sobreviventes = titanic['Sobreviveu'].value_counts().reset_index()
         prop_sobreviventes.columns = ['Sobrevivência', 'Count']
         prop_sobreviventes['Sobrevivência'] = prop_sobreviventes['Sobrevivência'].map(
             {0: 'Não Sobreviveu', 1: 'Sobreviveu'})
@@ -56,21 +71,21 @@ def gerar_grafico(tipo_grafico):
                      title='Número de Sobreviventes vs Não Sobreviventes')
 
     elif tipo_grafico == 'tarifa_sobrevivencia':
-        fig = px.box(titanic, x='Survived', y='Fare', color='Survived',
-                     labels={'Survived': 'Sobreviventes', 'Fare': 'Tarifa'},
+        fig = px.box(titanic, x='Sobreviveu', y='Tarifa', color='Sobreviveu',
+                     labels={'Sobreviveu': 'Sobreviventes', 'Tarifa': 'Tarifa'},
                      title='Distribuição de Tarifa por Sobrevivência')
 
     elif tipo_grafico == 'sobrevivencia_faixa_etaria':
-        taxa_sobrevivencia_idade = titanic.groupby('FaixaEtaria')['Survived'].mean().reset_index()
-        taxa_sobrevivencia_idade['Survived'] *= 100
+        taxa_sobrevivencia_idade = titanic.groupby('FaixaEtaria')['Sobreviveu'].mean().reset_index()
+        taxa_sobrevivencia_idade['Sobreviveu'] *= 100
 
-        fig = px.bar(taxa_sobrevivencia_idade, x='FaixaEtaria', y='Survived',
-                     labels={'FaixaEtaria': 'Faixa Etária', 'Survived': 'Taxa de Sobrevivência (%)'},
+        fig = px.bar(taxa_sobrevivencia_idade, x='FaixaEtaria', y='Sobreviveu',
+                     labels={'FaixaEtaria': 'Faixa Etária', 'Sobreviveu': 'Taxa de Sobrevivência (%)'},
                      title='Taxa de Sobrevivência por Faixa Etária')
 
     elif tipo_grafico == 'tarifa_idade':
-        fig = px.scatter(titanic, x='Age', y='Fare', color='Pclass',
-                         labels={'Age': 'Idade', 'Fare': 'Tarifa', 'Pclass': 'Classe'},
+        fig = px.scatter(titanic, x='Idade', y='Tarifa', color='Classe',
+                         labels={'Idade': 'Idade', 'Tarifa': 'Tarifa', 'Classe': 'Classe'},
                          title='Relação entre Idade e Tarifa')
 
     else:
@@ -80,7 +95,6 @@ def gerar_grafico(tipo_grafico):
 
 
 app = Dash(__name__, suppress_callback_exceptions=True)
-
 
 app.layout = html.Div(style={'backgroundColor': '#f9f9f9', 'padding': '20px'}, children=[
 
@@ -115,11 +129,41 @@ app.layout = html.Div(style={'backgroundColor': '#f9f9f9', 'padding': '20px'}, c
         html.H3('Lista de Dados do Titanic', style={'textAlign': 'center'}),
         dash_table.DataTable(
             id='tabela-dados',
-            columns=[{"name": i, "id": i} for i in titanic.columns],
+            columns=[{"name": col, "id": col} for col in titanic.columns],
             data=titanic.to_dict('records'),
             page_size=10,
-            style_table={'overflowX': 'auto'},
-            style_cell={'textAlign': 'center', 'minWidth': '100px', 'width': '150px', 'maxWidth': '200px'}
+            style_table={
+                'overflowX': 'auto',
+                'border': '1px solid #dcdcdc',
+                'borderRadius': '10px',
+                'boxShadow': '0 2px 10px rgba(0,0,0,0.1)'
+            },
+            style_header={
+                'backgroundColor': '#4a4a4a',
+                'color': 'white',
+                'fontWeight': 'bold',
+                'textAlign': 'center'
+            },
+            style_data={
+                'backgroundColor': '#f9f9f9',
+                'color': '#4a4a4a',
+                'textAlign': 'center'
+            },
+            style_data_conditional=[
+                {
+                    'if': {'row_index': 'odd'},
+                    'backgroundColor': '#e6e6e6'
+                }
+            ],
+            style_cell={
+                'textAlign': 'center',
+                'minWidth': '100px',
+                'width': '150px',
+                'maxWidth': '200px',
+                'whiteSpace': 'normal',
+                'overflow': 'hidden',
+                'textOverflow': 'ellipsis'
+            }
         )
     ])
 ])
@@ -135,3 +179,4 @@ def atualizar_grafico(tipo_grafico):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
