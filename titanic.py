@@ -96,7 +96,7 @@ def gerar_grafico(tipo_grafico):
 
 app = Dash(__name__, suppress_callback_exceptions=True)
 
-app.layout = html.Div(style={'backgroundColor': '#f9f9f9', 'padding': '20px'}, children=[
+app.layout = html.Div(style={'backgroundColor': '#f7f7f7', 'padding': '20px'}, children=[
 
     html.H1('Projeto A3 2024 - Titanic Dashboard', style={'textAlign': 'center', 'color': '#4a4a4a'}),
 
@@ -146,8 +146,9 @@ app.layout = html.Div(style={'backgroundColor': '#f9f9f9', 'padding': '20px'}, c
             },
             style_data={
                 'backgroundColor': '#f9f9f9',
-                'color': '#4a4a4a',
-                'textAlign': 'center'
+                'color': '#00000',
+                'textAlign': 'center',
+                'font-weight': 'bold'
             },
             style_data_conditional=[
                 {
@@ -179,4 +180,3 @@ def atualizar_grafico(tipo_grafico):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
