@@ -78,6 +78,22 @@ def gerar_grafico(tipo_grafico):
         return px.scatter(title=f"Erro ao gerar gráfico {tipo_grafico}")
 
 
+colunas_traduzidas = {
+    "PassengerId": "ID Passageiro",
+    "Survived": "Sobreviveu",
+    "Pclass": "Classe",
+    "Name": "Nome",
+    "Sex": "Sexo",
+    "Age": "Idade",
+    "SibSp": "Cônjuges/Irmãos",
+    "Parch": "Pais/Filhos",
+    "Ticket": "Bilhete",
+    "Fare": "Tarifa",
+    "Embarked": "Embarque",
+    "FaixaEtaria": "Faixa Etária",
+}
+
+
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 app.layout = html.Div([
@@ -160,7 +176,7 @@ app.layout = html.Div([
     html.Div(id="table-container", children=[
         dash_table.DataTable(
             id='tabela-dados',
-            columns=[{"name": i, "id": i} for i in titanic.columns],
+            columns=[{"name": colunas_traduzidas[i], "id": i} for i in titanic.columns],
             data=titanic.to_dict('records'),
             page_size=20,
             style_table={'overflowX': 'auto'},
